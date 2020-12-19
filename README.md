@@ -6,7 +6,10 @@
 #### Backend
 Node, Express
 - pass form data and call to python web scraper
-- JS or Py SMS Alert System
+- JS or Py SMS Alert System (Twilio)
+
+$1/month to rent a phone number
+0.0075/message (~13 message for $1)
 
 DB (MongodB Atlas Cluster)
 - unique link generation (when parsing over the same listings and repeat)
@@ -31,3 +34,4 @@ Data Needed
 3. Design of react form, animations, etc
 4. Overall Stack Architecture Diagram (for future reference frontend -> backend -> cloud)
 5. Research more sms options (free)
+- went with Twilio Trial Account for now and set up a basic endpoint to send text message
