@@ -24,10 +24,10 @@ Netlify/Heroku
 
 
 #### Todo
-1. encapsulate all web scraping into one function to call
+1. encapsulate all web scraping into one function to call (DONE)
 Data Needed
 - url 
 - specifications from form
-2. Setup basic backend node
 3. Design of react form, animations, etc
-
+4. Overall Stack Architecture Diagram (for future reference frontend -> backend -> cloud)
+5. Research more sms options (free)
