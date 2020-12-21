@@ -1,21 +1,20 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 app = express();
 dotenv.config();
+const PORT = process.env.PORT || 3000;
 
-const sys = require('util');
-const exec = require('child_process').exec;
-// const process = spawn('python', ["./test.py"]);
+//Connect to MongoDB Database
+mongoose.connect(process.env.DB_URI, {useNewUrlParser: true}, () => {
+    console.log('Successfully connected to MongoDB database...')
+});
 
-const PORT = 3333;
-
+//Backend Endpoint Routes
 app.use('/', require('./routes/root'));
-
 app.use('/scraper', require('./routes/scraper'));
-// (req, res) => {
-//     res.sendFile(__dirname + '/views/index.html');
-// }
 app.use('/send-message', require('./routes/sendMessage'));
+app.use('/alerts', require('./routes/notificationAlert'));
 
 app.listen(PORT, () => {
     console.log(`Listening on PORT: ${PORT}`);
