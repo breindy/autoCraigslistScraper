@@ -15,6 +15,7 @@ app.use('/scraper', require('./routes/scraper'));
 // (req, res) => {
 //     res.sendFile(__dirname + '/views/index.html');
 // }
+app.use('/send-message', require('./routes/sendMessage'));
 
 app.listen(PORT, () => {
     console.log(`Listening on PORT: ${PORT}`);
