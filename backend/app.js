@@ -26,6 +26,7 @@ app.use('/', require('./routes/root'));
 app.use('/scraper', require('./routes/scraper'));
 app.use('/send-message', require('./routes/sendMessage'));
 app.use('/alerts', require('./routes/alerts'));
+app.use('/listings', require('./routes/alertListings'));
 
 app.listen(PORT, () => {
     console.log(`Listening on PORT: ${PORT}`);
