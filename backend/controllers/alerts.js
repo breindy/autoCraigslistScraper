@@ -24,6 +24,19 @@ exports.newAlert = async (req, res) => {
     }
 }
 
-exports.deleteAlert = (req, res) => {
-    res.send('Delete Alert for User in DB Collection Endpoint!');
+exports.deleteAlert = async (req, res) => {
+    //Given a user phone number, delete document from alert collection
+    const { phoneNumber } = req.body;
+
+    try {
+        const phoneNumberExists = await Alert.find({phoneNumber: req.body.phoneNumber});
+        if(phoneNumberExists){
+            const deletedAlert = await Alert.deleteMany({phoneNumber: req.body.phoneNumber});
+            return res.status(200).send('📱 Phone Number Deleted');
+        }
+
+    } catch (error){
+        return res.status(400).send(error);
+    }
+    
 }

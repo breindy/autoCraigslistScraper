@@ -3,6 +3,6 @@ const router = express.Router();
 const alertsController = require('../controllers/alerts');
 
 router.post('/new', alertsController.newAlert);
-router.get('/delete', alertsController.deleteAlert);
+router.post('/delete', alertsController.deleteAlert);
 
 module.exports = router;
