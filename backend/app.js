@@ -20,7 +20,7 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology
 
 //Backend Endpoint Routes
 app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 app.use('/', require('./routes/root'));
 app.use('/scraper', require('./routes/scraper'));
