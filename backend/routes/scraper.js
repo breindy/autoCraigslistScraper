@@ -3,14 +3,17 @@ const router = express.Router();
 const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     console.log('in scraper route!');
-    var child = exec('python ./scraper.py')
+    var child = exec('python ./scraper.py --url "https://atlanta.craigslist.org/search/cto?s=%s&hasPic=1"');
     child.stdout.on('data', (data) => {
         console.log(data);
         res.write(`${data}`);
-        res.end(data);
     });
+    // child.on('exit', function() {
+    //     console.log('done!');
+    //     process.exit()
+    // })
 })
 
 module.exports = router;

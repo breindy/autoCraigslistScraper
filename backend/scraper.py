@@ -1,15 +1,25 @@
+import argparse
 import pandas as pd
 from requests import get
 from bs4 import BeautifulSoup as Soup
+
+# create an argumentparser object
+parser = argparse.ArgumentParser(description='obtain user url')
+parser.add_argument('--url', help='craigslist url to scrape with')
+args = parser.parse_args()
 
 def scrapeListings():
     # test pagination
     valid_listings = set()
     pagination = 120
+    url = str(args.url)
+    print(url)
     
     while pagination < 600:
         # get the url and turn it into a request
-        scrape_url = get('https://newyork.craigslist.org/d/cars-trucks-by-owner/search/que/cto?s=%s&hasPic=1', pagination)
+        # 'https://newyork.craigslist.org/d/cars-trucks-by-owner/search/que/cto?s=%s&hasPic=1'
+        # url+'s=%s&hasPic=1'
+        scrape_url = get(url, pagination)
 
         # make a request with the url and instantiate beautifulsoup constructor to parse the html data with
         soup_data = Soup(scrape_url.text, 'html.parser')
