@@ -27,3 +27,11 @@ exports.autoMessage = (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
 }
+
+// form submission, re-confirm to receive notifications
+exports.newAlertConfirmation = (req, res) => {
+    const twiml = new MessagingResponse();
+    twiml.message(`You are now subscribed to receive alerts about future car listings on Craigslist!`);
+    res.writeHead(200, {'Content-Type': 'text/xml'});
+    res.end(twiml.toString());
+}
