@@ -1,4 +1,5 @@
 import argparse
+import json
 import pandas as pd
 from requests import get
 from bs4 import BeautifulSoup as Soup
@@ -7,13 +8,15 @@ from bs4 import BeautifulSoup as Soup
 parser = argparse.ArgumentParser(description='obtain user url')
 parser.add_argument('--url', help='craigslist url to scrape with')
 args = parser.parse_args()
+scraped_listings = {}
+all_listings = []
 
 def scrapeListings():
     # test pagination
     valid_listings = set()
     pagination = 120
     url = str(args.url)
-    print(url)
+    # print(url)
     
     while pagination < 600:
         # get the url and turn it into a request
@@ -40,7 +43,7 @@ def scrapeListings():
 
     
 listings = scrapeListings()
-print(len(listings))
+# print(len(listings))
 
 for listing in listings:
     listing_analysis = get(listing)
@@ -52,24 +55,42 @@ for listing in listings:
     
     listing_price = listing_title.find('span', {"class": "price"}).text
     
-    print(listing_title_info, listing_price)
-    
+    # print(listing_title_info, listing_price)
+    scraped_listings['listingTitle'] = listing_title_info
+    scraped_listings['listingPrice'] = listing_price
+
     car_query = listing_data.find_all('p', {"class": "attrgroup"})
     # car year
     car_year = car_query[0].find('span').find('b').text[0:4]
-    print(car_year)
+    # print(car_year)
+    scraped_listings['year'] = car_year
     
     car_make_model = car_query[0].find('span').find('b').text[5:]
-    print(car_make_model)
+    # print(car_make_model)
+    scraped_listings['carMakeModel'] = car_make_model
     
     # Second attrgroup class
     car_info = car_query[1].find_all('span')
     for info in car_info:
         # print condition, odometer, title status, transmission, (optional: color)
-        if "condition:" in info.text or "color:" in info.text or "odometer:" in info.text or "title status:" in info.text or "transmission:" in info.text:
-            print(info.text)
+        ## todo: REFACTOR (DRY) ##
+        if "condition:" in info.text: 
+            scraped_listings['condition'] = info.text
+        if "color:" in info.text:
+            scraped_listings['color'] = info.text
+        if "odometer:" in info.text:
+            scraped_listings['odometer'] = info.text
+        if "title status:" in info.text:
+            scraped_listings['titleStatus'] = info.text
+        if "transmission:" in info.text:
+            scraped_listings['transmissionType'] = info.text
     
     # listing link
-    print(listing)
+    # print(listing)
+    scraped_listings['link'] = listing
     
-    print('-----------------------------')
+    all_listings.append(scraped_listings)
+
+    # print('-----------------------------')
+print(all_listings)
+print(len(all_listings))

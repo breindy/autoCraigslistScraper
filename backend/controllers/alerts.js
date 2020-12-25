@@ -1,9 +1,11 @@
 //import alerts model
 const Alert = require('../models/Alert');
+const scrapeListings = require('../scraper.js');
 
 exports.newAlert = async (req, res) => {
     const { phoneNumber, location, car, model, odometerMin, odometerMax, priceRangeMin, priceRangeMax } = req.body;
-    
+    //TODO: Add new model VALIDATION
+
     //Create a new alert model to save into mongodb collection (new document)
     const newUserAlert = new Alert({
         phoneNumber,
@@ -17,8 +19,10 @@ exports.newAlert = async (req, res) => {
     });
 
     try {
-        const savedAlert = await newUserAlert.save();
-        res.send(200).send(savedAlert);
+        // const savedAlert = await newUserAlert.save();
+        scrapeListings();
+        console.log('newUserAlert: ', newUserAlert);
+        res.sendStatus(200);
     } catch (error){
         res.status(400).send(error);
     }
