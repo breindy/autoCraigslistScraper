@@ -5,9 +5,13 @@ app = express();
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 
+var mongodb;
+
 //Connect to MongoDB Database
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
-    console.log('Successfully connected to MongoDB database...')
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 4 });
+
+mongoose.connection.on("connected", () => {
+    console.log('Connected to MongoDB Database...')
 });
 
 // mongoose.createConnection(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
