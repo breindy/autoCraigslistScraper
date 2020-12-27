@@ -1,5 +1,6 @@
 //import alerts model
 const Alert = require('../models/Alert');
+const AlertListing = require('../models/AlertListing');
 const scrapeListings = require('../scraper.js');
 
 exports.newAlert = async (req, res) => {
@@ -20,14 +21,54 @@ exports.newAlert = async (req, res) => {
 
     try {
         // const savedAlert = await newUserAlert.save();
-        const result = await scrapeListings();
-        console.log('result: ', result);
-        // scrapeListings().then(results => console.log('results: ', results));
-        // console.log('newUserAlert: ', newUserAlert);
+
+        //send newUserAlert car search based on conditions set
+        //TODO: pass in arguments into scrapeListings from newUserAlert
+        // const result = await scrapeListings();
         // res.status(200).send({
-        //     "newAlertListings": result, 
+        //     "newAlertListings": "hahha", 
         // });
-        res.sendStatus(200);
+        //TODO: Save to alertListings schema pass in newUserAlert phone number and results listing
+        let listing = {
+            url: 's212312312315sdfsdfdfs',
+            car: 'mercedes',
+            model: 'c123',
+            year: 2014,
+            odometer: 18899,
+            price: 12324,
+            color: 'black',
+        }
+        const newAlertListings = new AlertListing({
+            phoneNumber: newUserAlert.phoneNumber,
+            validListings: listing,
+        });
+        // console.log(savedAlertListings);
+        const savedAlertListings = await newAlertListings.save();
+
+        //update newly created alertListing to the rest of validListings array
+        let moreListing = {
+            url: 'djlsdflsdjflsjdflsjf',
+            car: 'honda',
+            model: 'donkey',
+            year: 2001,
+            odometer: 99999,
+            price: 55555,
+            color: 'maroon',
+        }
+
+       AlertListing.findOneAndUpdate(
+            { _id: newAlertListings._id }, 
+            { $push: { validListings: moreListing  } },
+           function (error, success) {
+                 if (error) {
+                     console.log(error);
+                 } else {
+                     console.log(success);
+                 }
+        });
+        res.status(200).send({
+            "newAlertListings": savedAlertListings,
+        });
     } catch (error){
         res.status(400).send(error);
     }
