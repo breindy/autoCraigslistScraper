@@ -93,4 +93,4 @@ for listing in listings:
 
     # print('-----------------------------')
 print(all_listings)
-print(len(all_listings))
+# print(len(all_listings))

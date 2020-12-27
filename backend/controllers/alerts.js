@@ -20,8 +20,13 @@ exports.newAlert = async (req, res) => {
 
     try {
         // const savedAlert = await newUserAlert.save();
-        scrapeListings();
-        console.log('newUserAlert: ', newUserAlert);
+        const result = await scrapeListings();
+        console.log('result: ', result);
+        // scrapeListings().then(results => console.log('results: ', results));
+        // console.log('newUserAlert: ', newUserAlert);
+        // res.status(200).send({
+        //     "newAlertListings": result, 
+        // });
         res.sendStatus(200);
     } catch (error){
         res.status(400).send(error);

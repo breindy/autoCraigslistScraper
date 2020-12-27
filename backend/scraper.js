@@ -1,4 +1,6 @@
-const exec = require('child_process').exec;
+const { once } = require('events'); 
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 //Pass in appropriate arguments into scraper
 /**
  * --url type: string
@@ -8,12 +10,18 @@ const exec = require('child_process').exec;
  * --priceRange type: integer
  * --color type: string
  */
-const scrapeListings = () => {
-    var child = exec('python ./scraper.py --url "https://atlanta.craigslist.org/search/cto?s=%s&hasPic=1"');
-    child.stdout.on('data', (data) => {
-        //return formatted json data of valid listings
-        console.log(data);
-    });
+
+const scrapeListings =  async (callback) => {
+    return new Promise((resolve, reject) => {
+        exec('python ./scraper.py --url "https://atlanta.craigslist.org/search/cto?s=%s&hasPic=1"',
+        (error, stdout, stderr) => {
+            if(error){
+                console.warn(error);
+            }
+            // console.log('stdout: ', stdout);
+            resolve(stdout? stdout : stderr);
+        })
+    })
 }
 
 module.exports = scrapeListings
