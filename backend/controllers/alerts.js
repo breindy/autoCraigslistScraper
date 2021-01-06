@@ -20,45 +20,44 @@ exports.newAlert = async (req, res) => {
     });
 
     try {
-        // const savedAlert = await newUserAlert.save();
+        const savedAlert = await newUserAlert.save();
 
         //send newUserAlert car search based on conditions set
         //TODO: pass in arguments into scrapeListings from newUserAlert
-        // const result = await scrapeListings();
-        // res.status(200).send({
-        //     "newAlertListings": "hahha", 
-        // });
-        //TODO: Save to alertListings schema pass in newUserAlert phone number and results listing
+        const result = await scrapeListings();
+
+        //Save to alertListings schema pass in newUserAlert phone number and results listin
+        let firstListing = result[0];
+        console.log('firstListing: ', firstListing);
         let listing = {
-            url: 's212312312315sdfsdfdfs',
-            car: 'mercedes',
-            model: 'c123',
-            year: 2014,
-            odometer: 18899,
-            price: 12324,
-            color: 'black',
+            url: firstListing.link,
+            car: firstListing.carMakeModel,
+            model: firstListing.carMakeModel,
+            year: firstListing.year,
+            odometer: firstListing.odometer,
+            price: firstListing.year,
+            color: (firstListing.color ? firstListing.color : 'N/A')
         }
+
         const newAlertListings = new AlertListing({
             phoneNumber: newUserAlert.phoneNumber,
             validListings: listing,
         });
-        // console.log(savedAlertListings);
         const savedAlertListings = await newAlertListings.save();
 
-        //update newly created alertListing to the rest of validListings array
-        let moreListing = {
-            url: 'djlsdflsdjflsjdflsjf',
-            car: 'honda',
-            model: 'donkey',
-            year: 2001,
-            odometer: 99999,
-            price: 55555,
-            color: 'maroon',
-        }
-
-       AlertListing.findOneAndUpdate(
+        for(let i = 1; i < result.length; i++){
+            let listing = {
+                url: result[i].link,
+                car: result[i].carMakeModel,
+                model: result[i].carMakeModel,
+                year: result[i].year,
+                odometer: result[i].odometer,
+                price: result[i].year,
+                color: (result[i].color ? result[i].color : 'N/A')
+            }
+               AlertListing.findOneAndUpdate(
             { _id: newAlertListings._id }, 
-            { $push: { validListings: moreListing  } },
+            { $push: { validListings: listing  } },
            function (error, success) {
                  if (error) {
                      console.log(error);
@@ -66,8 +65,9 @@ exports.newAlert = async (req, res) => {
                      console.log(success);
                  }
         });
+        }
         res.status(200).send({
-            "newAlertListings": savedAlertListings,
+            "newAlertListings": result,
         });
     } catch (error){
         res.status(400).send(error);

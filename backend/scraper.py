@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup as Soup
 parser = argparse.ArgumentParser(description='obtain user url')
 parser.add_argument('--url', help='craigslist url to scrape with')
 args = parser.parse_args()
-scraped_listings = {}
 all_listings = []
 
 def scrapeListings():
@@ -46,6 +45,8 @@ listings = scrapeListings()
 # print(len(listings))
 
 for listing in listings:
+    scraped_listings = {}
+
     listing_analysis = get(listing)
     car_request = listing_analysis.text
     listing_data = Soup(car_request, 'html.parser')
@@ -63,7 +64,7 @@ for listing in listings:
     # car year
     car_year = car_query[0].find('span').find('b').text[0:4]
     # print(car_year)
-    scraped_listings['year'] = car_year
+    scraped_listings['year'] = int(car_year)
     
     car_make_model = car_query[0].find('span').find('b').text[5:]
     # print(car_make_model)
@@ -75,15 +76,20 @@ for listing in listings:
         # print condition, odometer, title status, transmission, (optional: color)
         ## todo: REFACTOR (DRY) ##
         if "condition:" in info.text: 
-            scraped_listings['condition'] = info.text
+            condition = info.text.replace('condition: ', '')
+            scraped_listings['condition'] = condition
         if "color:" in info.text:
-            scraped_listings['color'] = info.text
+            color = info.text.replace('color: ', '')
+            scraped_listings['color'] = color
         if "odometer:" in info.text:
-            scraped_listings['odometer'] = info.text
+            odometer = info.text.replace('odometer: ', '')
+            scraped_listings['odometer'] = int(odometer)
         if "title status:" in info.text:
-            scraped_listings['titleStatus'] = info.text
+            title_status = info.text.replace('title status: ', '')
+            scraped_listings['titleStatus'] = title_status
         if "transmission:" in info.text:
-            scraped_listings['transmissionType'] = info.text
+            transmission_type = info.text.replace('transmission: ', '')
+            scraped_listings['transmissionType'] = transmission_type
     
     # listing link
     # print(listing)
@@ -92,5 +98,8 @@ for listing in listings:
     all_listings.append(scraped_listings)
 
     # print('-----------------------------')
-print(all_listings)
+
+print(json.dumps(all_listings))
+# print(all_listings)
+# return all_listings
 # print(len(all_listings))

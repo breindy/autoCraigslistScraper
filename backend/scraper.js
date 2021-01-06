@@ -1,6 +1,7 @@
 const { once } = require('events'); 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const { execSync } = require('child_process');
 //Pass in appropriate arguments into scraper
 /**
  * --url type: string
@@ -18,8 +19,10 @@ const scrapeListings =  async (callback) => {
             if(error){
                 console.warn(error);
             }
-            // console.log('stdout: ', stdout);
-            resolve(stdout? stdout : stderr);
+            // console.log('scrapeListing.py: ', typeof stdout);
+            // console.log('scrapeListing.py: json: ', JSON.parse(stdout));
+            resolve(stdout? JSON.parse(stdout) : stderr);
+
         })
     })
 }
