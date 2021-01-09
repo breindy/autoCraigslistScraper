@@ -12,15 +12,13 @@ const { execSync } = require('child_process');
  * --color type: string
  */
 
-const scrapeListings =  async (callback) => {
+const scrapeListings =  async (location, odometerMax, priceRangeMin, priceRangeMax) => {
     return new Promise((resolve, reject) => {
-        exec('python ./scraper.py --url "https://atlanta.craigslist.org/search/cto?s=%s&hasPic=1"',
+        exec('python ./scraper.py --url "https://atlanta.craigslist.org/search/cto?s=%s&hasPic=1" --location "atlanta" --odometerMax 123123 --priceMin 3333 --priceMax 5555',
         (error, stdout, stderr) => {
             if(error){
                 console.warn(error);
             }
-            // console.log('scrapeListing.py: ', typeof stdout);
-            // console.log('scrapeListing.py: json: ', JSON.parse(stdout));
             resolve(stdout? JSON.parse(stdout) : stderr);
 
         })

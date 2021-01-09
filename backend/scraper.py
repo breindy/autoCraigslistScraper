@@ -7,15 +7,26 @@ from bs4 import BeautifulSoup as Soup
 # create an argumentparser object
 parser = argparse.ArgumentParser(description='obtain user url')
 parser.add_argument('--url', help='craigslist url to scrape with')
+parser.add_argument('--location', help='craigslist location to scrape from')
+parser.add_argument('--priceMin', help='minimum price range for listings')
+parser.add_argument('--priceMax', help='maximum price range for listings')
+parser.add_argument('--odometerMax', help='maximum number of mileage on a listing')
 args = parser.parse_args()
 all_listings = []
+
+url = str(args.url)
+location = str(args.url)
+price_min = int(args.priceMin)
+price_max = int(args.priceMax)
+odometer_max = int(args.odometerMax)
 
 def scrapeListings():
     # test pagination
     valid_listings = set()
     pagination = 120
-    url = str(args.url)
+    
     # print(url)
+    # print(location, price_min, price_max, odometer_max)
     
     while pagination < 600:
         # get the url and turn it into a request
@@ -33,7 +44,7 @@ def scrapeListings():
             listing_price = result.find("span", {"class": "result-price"}).text
             valid_price = listing_price[1:]
             valid_price = valid_price.replace(",", "")
-            if int(valid_price) > 2000 and int(valid_price) < 6000:
+            if int(valid_price) > price_min and int(valid_price) < price_max:
                 valid_listings.add(result.find("a", {"class": "result-title hdrlnk"}).get('href'))
         
         pagination += 120
@@ -55,9 +66,13 @@ for listing in listings:
     listing_title_info = listing_title.find('span', {"id": "titletextonly"}).text
     
     listing_price = listing_title.find('span', {"class": "price"}).text
+    listing_price = listing_price.replace('$', '')
+    listing_price = listing_price.replace(',', '')
+    listing_price = int(listing_price)
     
     # print(listing_title_info, listing_price)
     scraped_listings['listingTitle'] = listing_title_info
+    
     scraped_listings['listingPrice'] = listing_price
 
     car_query = listing_data.find_all('p', {"class": "attrgroup"})
@@ -94,8 +109,11 @@ for listing in listings:
     # listing link
     # print(listing)
     scraped_listings['link'] = listing
+
+    if int(odometer) < odometer_max:
+        all_listings.append(scraped_listings)
     
-    all_listings.append(scraped_listings)
+    # all_listings.append(scraped_listings)
 
     # print('-----------------------------')
 
